@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-1234-56789abcdef0",
+		"name": "CNPMM_API - Task 1 Register",
+		"description": "Collection test các API cho chức năng Đăng ký tài khoản (bao gồm Validation, Rate Limiting và OTP kích hoạt qua mail).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Đăng ký tài khoản (Thành công)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Nguyen Van Test\",\n    \"email\": \"tai3717273@gmail.com\",\n    \"password\": \"Password123\",\n    \"confirmPassword\": \"Password123\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:6969/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				},
+				"description": "Gọi API này để tạo tài khoản mới. Nếu thành công sẽ trả về HTTP 201 và hệ thống sẽ gửi 1 mã OTP gồm 6 chữ số vào email."
+			},
+			"response": []
+		},
+		{
+			"name": "2. Đăng ký tài khoản (Lỗi Validation)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"\",\n    \"email\": \"email-sai-dinh-dang\",\n    \"password\": \"123\",\n    \"confirmPassword\": \"khac-password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:6969/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				},
+				"description": "Kiểm tra xem hệ thống có bắt được lỗi nhập sai định dạng email, mật khẩu ngắn không có chữ hoa/số, hoặc mật khẩu xác nhận không khớp hay không. Kết quả mong đợi: HTTP 400."
+			},
+			"response": []
+		},
+		{
+			"name": "3. Xác thực mã OTP (Thành công)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"tai3717273@gmail.com\",\n    \"otp\": \"000000\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:6969/api/auth/verify-otp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"auth",
+						"verify-otp"
+					]
+				},
+				"description": "Nhập mã 6 số nhận được từ email vào trường 'otp'. Kết quả mong đợi: HTTP 200 và tài khoản chuyển sang trạng thái đã kích hoạt."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Xác thực mã OTP (Sai mã / Hết hạn)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"tai3717273@gmail.com\",\n    \"otp\": \"000000\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:6969/api/auth/verify-otp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"auth",
+						"verify-otp"
+					]
+				},
+				"description": "Cố tình nhập sai mã OTP hoặc nhập mã khi đã quá 5 phút. Kết quả mong đợi: HTTP 400."
+			},
+			"response": []
+		},
+		{
+			"name": "5. Gửi lại OTP (Resend OTP)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"tai3717273@gmail.com\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:6969/api/auth/resend-otp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "6969",
+					"path": [
+						"api",
+						"auth",
+						"resend-otp"
+					]
+				},
+				"description": "Gọi API này khi không nhận được email hoặc mã OTP cũ đã hết hạn. Hệ thống sẽ cấp một mã mới. Giới hạn 3 lần / 10 phút."
+			},
+			"response": []
+		}
+	]
+}
